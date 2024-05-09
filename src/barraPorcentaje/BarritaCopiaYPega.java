@@ -115,8 +115,8 @@ public class BarritaCopiaYPega extends JPanel {
 				 // Copia los archivos de la carpeta origen a la carpeta destino
 	            try {
 	            	copiaCarpetas(new File(jtfOrigen.getText()), new File(jtfDestino.getText()));
-	            	JOptionPane.showMessageDialog(null, "Copia realizada con éxito");
 	            } catch (IOException ex) {
+	            	JOptionPane.showMessageDialog(null, "La Copia no se ha podido realizar de forma correcta");
 	                ex.printStackTrace();
 	            }
 			}
@@ -191,6 +191,9 @@ public class BarritaCopiaYPega extends JPanel {
 	 * 
 	 */
 	private void seleccionaCarpetaDestino() {
+		
+		progressBar.setValue(0); // Pongo el valor de la barra de progreso a 0 para la siguiente copia
+		
 		this.jfileChooser = new JFileChooser();
 
 		// Establecimiento de la carpeta de inicio
@@ -239,9 +242,35 @@ public class BarritaCopiaYPega extends JPanel {
 	 */
 	private void copiaCarpetas(File source, File destination) throws IOException {
 
-		// Verifica si la carpeta de destion existe, si no, 
-		// la creamos...(por si escribes en el jtextfield). 
+		 progressBar.setValue(0); // Pongo el valor de la barra de progreso a 0 para la siguiente copia
+		
+		// Si no se ha seleccionado ningún directorio de origen,
+		// avisamos y salimos del método.
+		if (this.jtfOrigen.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Seleccione una carpeta de origen");
+			return;
+		}
+
+		// Si no se ha seleccionado ningún directorio de destino,
+		// avisamos y salimos del método.
+		if (this.jtfDestino.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Seleccione una carpeta de destino");
+			return;
+		}
+
+		
+
+		// Verifica si la carpeta de destino existe, si no,
+		// notificamos el error. (esto si no bloqueo el jtextfield).
+		// y la creamos...(por si escribes en el jtextfield). 
 		if (!destination.exists()) {
+			// Si no existe, pregunta al usuario si desea crearla
+            int opcion = JOptionPane.showConfirmDialog(null, "La carpeta no existe ¿Desea crearla?", "Confirma", JOptionPane.YES_NO_OPTION);
+            
+            // Si el usuario elige no reemplazar, salta este archivo y continúa con el siguiente
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
 			destination.mkdirs();
 		}
 
@@ -254,9 +283,10 @@ public class BarritaCopiaYPega extends JPanel {
 	    // Inicializo el progreso de la barra
 	    int progreso = 0;
 		
-		
-		
-		// Hago un for-each para iterar sobre los archivos en la carpeta origen
+	    
+	    
+	    
+///////// Hago un for-each para iterar sobre los archivos en la carpeta origen
 		for (File file : source.listFiles()) {
 			// Crea la ruta de destino para el archivo
 			Path destPath = new File(destination, file.getName()).toPath();
@@ -278,16 +308,23 @@ public class BarritaCopiaYPega extends JPanel {
 			// Copio el archivo a la carpeta de destino  (añado el StandardCopyOption por si es necesario reemplazar el archivo).
 			Files.copy(file.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
 			
-		////  -----   BARRA DE PROGRESO  PARTE 2 --------  ////
+		
+			////  -----   BARRA DE PROGRESO  PARTE 2 --------  //// dentro del bucle for vamos incrementando el valor de la barra
 			 // Incrementa el progreso
 	        progreso++;
 	        // Calcula el porcentaje completado
 	        int percentage = (int) ((double) progreso / totalFiles * 100);
 	        // Actualiza el valor del progreso en el JProgressBar
 	        progressBar.setValue(percentage);
+	        progressBar.repaint();
 			
-			
+	        
+	        
+	        
 		}
+		
+		JOptionPane.showMessageDialog(null,
+				"Copia realizada con éxito");
 
 	}
 	
