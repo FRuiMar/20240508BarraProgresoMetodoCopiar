@@ -6,6 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import barraPorcentaje.view.BarritaCopiaYPega;
+import barraPorcentaje.view.PanelFileFinder;
+import barraPorcentaje.view.PanelSliderTamanoArchivoYTabla;
+
 import java.awt.BorderLayout;
 import javax.swing.JTabbedPane;
 
@@ -13,6 +17,8 @@ public class Principal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	PanelFileFinder panelBuscador; 
+	PanelSliderTamanoArchivoYTabla panelSlider;
 
 	/**
 	 * Launch the application.
@@ -37,7 +43,7 @@ public class Principal extends JFrame {
 		super("Probando varias tabs");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 250);
+		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -52,9 +58,13 @@ public class Principal extends JFrame {
 		
 		//CREO LOS PANELES QUE VOY A CARGAR  EN EL PANEL DE TABS.
 		BarritaCopiaYPega panelBarrita = new BarritaCopiaYPega();
+		PanelFileFinder panelBuscador = new PanelFileFinder();
+		PanelSliderTamanoArchivoYTabla panelSlider = new PanelSliderTamanoArchivoYTabla();
 		
 		//CREO LAS PESTAÑAS QUE SE VAN A AÑADIR Y PONGO NOMBRE VISIBLE DE LA PESTAÑA Y QUÉ PANEL CARGA.
 		tabbedPane.addTab("Copiado de carpetas", panelBarrita);
+		tabbedPane.addTab("Muestra archivos de carpeta", panelBuscador);
+		tabbedPane.addTab("Busca archivos por tamaño", panelSlider);
 		
 		
 		
